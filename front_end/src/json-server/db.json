@@ -1,0 +1,183 @@
+{
+  "RecoInfoData": [
+    {
+      "serverName": "서버1",
+      "ipAddress": "ip1",
+      "vendor": "업체1",
+      "id": 1
+    },
+    {
+      "serverName": "123",
+      "ipAddress": "123",
+      "vendor": "123",
+      "id": 2
+    },
+    {
+      "serverName": "서버서버서버",
+      "ipAddress": "서버서버서버",
+      "vendor": "서버서버서버",
+      "id": 3
+    },
+    {
+      "serverName": "서버서버서버",
+      "ipAddress": "서버서버서버",
+      "vendor": "서버서버서버",
+      "id": 5
+    }
+  ],
+  "cctv_infos": [
+    {
+      "name": "1",
+      "comment": "1",
+      "ip_address": "1",
+      "area1": "333",
+      "area2": "222",
+      "area3": "111",
+      "latitude": "1",
+      "longitude": "1",
+      "manufacturer": "1",
+      "model": "1",
+      "rtsp_path": "1",
+      "rtsp_port": "222",
+      "onvif_path": "1",
+      "onvif_port": "1",
+      "username": "1",
+      "password": "1",
+      "check1": true,
+      "check2": true,
+      "check3": true,
+      "useable": "1",
+      "health_check": "사용",
+      "checkbox_data": "이벤트 전송 비상벨",
+      "manage_port": "웹 포트",
+      "address": "333 222 111",
+      "id": 1,
+      "group_id": 2,
+      "control": false
+    },
+    {
+      "name": "2",
+      "check1": true,
+      "check2": true,
+      "check3": true,
+      "comment": "s",
+      "ip_address": "s",
+      "area1": "s",
+      "area2": "s",
+      "area3": "s",
+      "latitude": "s",
+      "longitude": "s",
+      "manufacturer": "s",
+      "model": "s",
+      "rtsp_path": "s",
+      "rtsp_port": "s",
+      "onvif_path": "s",
+      "onvif_port": "s",
+      "username": "s",
+      "password": "s",
+      "useable": "s",
+      "manage_port": "웹 포트",
+      "id": 2,
+      "group_id": 0,
+      "control": false
+    },
+    {
+      "name": "3",
+      "check1": false,
+      "check2": false,
+      "check3": false,
+      "comment": "2",
+      "ip_address": "2",
+      "area1": "2",
+      "area2": "2",
+      "area3": "2",
+      "latitude": "2",
+      "longitude": "2",
+      "manufacturer": "2",
+      "model": "2",
+      "rtsp_path": "2",
+      "rtsp_port": "2",
+      "onvif_path": "2",
+      "onvif_port": "2",
+      "username": "2",
+      "password": "2",
+      "useable": "2",
+      "manage_port": "웹 포트",
+      "group_id": 3,
+      "control": false
+    },
+    {
+      "name": "4",
+      "check1": false,
+      "check2": true,
+      "check3": false,
+      "comment": "4",
+      "ip_address": "4",
+      "area1": "4",
+      "area2": "4",
+      "area3": "4",
+      "latitude": "4",
+      "longitude": "4",
+      "manufacturer": "4",
+      "model": "4",
+      "rtsp_path": "4",
+      "rtsp_port": "4",
+      "onvif_path": "4",
+      "onvif_port": "4",
+      "username": "4",
+      "password": "4",
+      "useable": "4",
+      "manage_port": "웹 포트",
+      "group_id": 0,
+      "control": false
+    },
+    {
+      "name": "5",
+      "check1": false,
+      "check2": true,
+      "check3": true,
+      "comment": "2",
+      "ip_address": "3",
+      "area1": "4",
+      "area2": "5",
+      "area3": "6",
+      "latitude": "7",
+      "longitude": "8",
+      "manufacturer": "9",
+      "model": "0",
+      "rtsp_path": "1",
+      "rtsp_port": "2",
+      "onvif_path": "3",
+      "onvif_port": "4",
+      "username": "5",
+      "password": "6",
+      "useable": "7",
+      "manage_port": "웹 포트",
+      "group_id": 1,
+      "control": false
+    }
+  ],
+  "group_data": [
+    {
+      "name": "그룹1",
+      "id": 1
+    },
+    {
+      "name": "그룹2",
+      "id": 2
+    },
+    {
+      "name": "그룹3",
+      "id": 3
+    }
+  ],
+  "control_group": [
+    {
+      "name": "",
+      "address": "",
+      "vendor": "",
+      "manufacturer": "",
+      "group_id": ""
+    }
+  ]
+}
