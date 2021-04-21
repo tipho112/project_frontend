@@ -11,15 +11,15 @@
 
           <div class="modal-body">
             <slot name="body">
-                <span> 서버 이름 </span><input type="text" v-model="name"><br/>
-                <span> ip 주소 </span><input type="text" v-model="ip_address"><br/>
-                <span> 업체명 </span><input type="text" v-model="vendor"><br/>
+                <span> 제조사 </span><input type="text" v-model="manufacturer"><br/>
+                <span> 모델명 </span><input type="text" v-model="model"><br/>
+                <span> Paths </span><input type="text" v-model="paths"><br/>
             </slot>
           </div>
 
           <div class="modal-footer">
             <slot name="footer">
-              <button @click="updateRecoInfo(name, ip_address, vendor), $emit('close')"> 수정 </button>
+              <button @click="updateRTSP(manufacturer, model, paths), $emit('close')"> 수정 </button>
               <button @click="$emit('close')"> 취소 </button>
             </slot>
           </div>
@@ -33,43 +33,43 @@
 
 export default {
   props : {
-    recoId: {
+    rtspId: {
       type: Number,
       required: true
     }
   },
   data() {
         return {
-            RecoInfos: [],
-            name: '',
-            ip_address: '',
-            vendor: '',
+            RTSPInfos: [],
+            manufacturer: '',
+            model: '',
+            paths: '',
         }
   },
   mounted() {
-    this.getRecoInfo()
+    this.getRTSP()
   },
   methods: {
-    getRecoInfo () {
-      this.$http.get('http://localhost:3000/recoding_infos/'+this.recoId)
+    getRTSP () {
+      this.$http.get('http://localhost:3000/rtsp_infos/'+this.rtspId)
       .then((res) => {
-          this.name = res.data.name
-          this.ip_address = res.data.ip_address
-          this.vendor = res.data.vendor
+          this.manufacturer = res.data.manufacturer
+          this.model = res.data.model
+          this.paths = res.data.paths
       })
     },
-    updateRecoInfo(name, ip_address, vendor) {
-        if(name && ip_address && vendor){
-            this.$http.patch('http://localhost:3000/recoding_infos/'+this.recoId, {
-            name: name,
-            ip_address: ip_address,
-            vendor: vendor
+    updateRTSP(manufacturer, model, paths) {
+        if(manufacturer && model && paths){
+            this.$http.patch('http://localhost:3000/rtsp_infos/'+this.rtspId, {
+            manufacturer: manufacturer,
+            model: model,
+            paths: paths
             })
             .then((res) => {
-            this.RecoInfos.push(res.data);
-            this.name = '',
-            this.ip_address = '',
-            this.vendor = '';
+            this.RTSPInfos.push(res.data);
+            this.manufacturer = '',
+            this.model = '',
+            this.paths = '';
             })
         }
     },

@@ -4,7 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from 'axios'
+import vueMoment from 'vue-moment'
 
+Vue.use(vueMoment)
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 

@@ -1,9 +1,11 @@
 <template>
   <div id="app">
     <!-- <RecoinfoForm /> -->
-    <!-- <CCTVInsertForm /> -->
-    <CCTVGroupForm />
+    <CCTVInsertForm />
+    <!-- <CCTVGroupForm /> -->
+    <!-- <FixReportForm /> -->
     <!-- <ControlGroupForm /> -->
+    <!-- <CameraHealthForm /> -->
   </div>
 </template>
 
@@ -13,6 +15,10 @@ import RecoinfoForm from './components/RecodingInfo/RecoinfoForm.vue'
 import CCTVInsertForm from './components/CCTV/CCTVInsertForm.vue'
 import CCTVGroupForm from './components/CCTV/CCTVGroupForm.vue'
 import ControlGroupForm from './components/CCTV/ControlGroupForm.vue'
+import RTSPInfoForm from './components/CCTV/RTSPInfoForm.vue'
+import FixReportForm from './components/CCTV/FixReportForm.vue'
+import CameraHealthForm from './components/CCTV/CameraHealthForm.vue'
+
 
 export default {
   name: 'App',
@@ -20,7 +26,10 @@ export default {
     'RecoinfoForm': RecoinfoForm,
     'CCTVInsertForm': CCTVInsertForm,
     'ControlGroupForm': ControlGroupForm,
-    'CCTVGroupForm': CCTVGroupForm
+    'CCTVGroupForm': CCTVGroupForm,
+    'RTSPInfoForm' : RTSPInfoForm,
+    'CameraHealthForm' : CameraHealthForm,
+    'FixReportForm' : FixReportForm,
   }
 }
 </script>

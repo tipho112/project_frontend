@@ -11,15 +11,15 @@
 
           <div class="modal-body">
             <slot name="body">
-              <span> 서버 이름 </span><input type="text" v-model="serverName" placeholder="서버 이름 입력"><br/>
-              <span> ip 주소 </span><input type="text" v-model="ipAddress" placeholder="서버 ip 입력"><br/>
+              <span> 서버 이름 </span><input type="text" v-model="name" placeholder="서버 이름 입력"><br/>
+              <span> ip 주소 </span><input type="text" v-model="ip_address" placeholder="서버 ip 입력"><br/>
               <span> 업체명 </span><input type="text" v-model="vendor" placeholder="업체명 입력"><br/>
             </slot>
           </div>
 
           <div class="modal-footer">
             <slot name="footer">
-              <button @click="addRecoInfo(serverName, ipAddress, vendor), $emit('close')"> 추가 </button>
+              <button @click="addRecoInfo(name, ip_address, vendor), $emit('close')"> 추가 </button>
               <button @click="$emit('close')"> 취소 </button>
             </slot>
           </div>
@@ -35,23 +35,23 @@ export default {
   data() {
         return {
             RecoInfos: [],
-            serverName: '',
-            ipAddress: '',
+            name: '',
+            ip_address: '',
             vendor: '',
         }
   },
   methods: {
-    addRecoInfo(serverName, ipAddress, vendor) {
-      if(serverName && ipAddress && vendor){
-        this.$http.post('http://localhost:3000/RecoInfoData', {
-          serverName: serverName,
-          ipAddress: ipAddress,
+    addRecoInfo(name, ip_address, vendor) {
+      if(name && ip_address && vendor){
+        this.$http.post('http://localhost:3000/recoding_infos', {
+          name: name,
+          ip_address: ip_address,
           vendor: vendor
         })
         .then((res) => {
           this.RecoInfos.push(res.data);         
-          this.serverName = '',
-          this.ipAddress = '',
+          this.name = '',
+          this.ip_address = '',
           this.vendor = '';
         })
       }

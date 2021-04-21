@@ -12,7 +12,10 @@
           <div class="modal-body">
             <slot name="body">
                 <tr v-for="(CCTVInfo, i) in CCTVInfos" :key="i" class="list-unstyled">
-                    <td><input type="checkbox" :value="CCTVInfo.id" v-model="checkedCCTV"></td>
+                    <td>
+                      <input v-if="CCTVInfo.group_id == 0" type="checkbox" :value="CCTVInfo.id">
+                      <input v-if="CCTVInfo.group_id != 0" type="checkbox" :value="CCTVInfo.id" checked disabled>
+                    </td>
                     <td><span> {{ CCTVInfo.name }}  </span></td>
                 </tr>
             </slot>
@@ -31,7 +34,6 @@
 </template>
 
 <script>
-
 export default {
   props : {
     group_id: {
@@ -39,26 +41,35 @@ export default {
       required: true
     }
   },
+  mounted() {
+    // this.loadData();
+    // this.getCCTVGroupData();
+    this.loadData();
+    // this.getCCTVGroupData();
+  },
   data() {
         return {
             groupData: [],
             CCTVInfos: [],
+            cameraDatas: [],
             checkedCCTV: [],
             name: '',
         }
   },
-  mounted() {
-    this.getCCTVData();
-  },
   methods: {
-    getCCTVData () {
+    loadData() {
       this.$http.get('http://localhost:3000/cctv_infos')
       .then((res) => {
-        console.log(res.group_id);
-        if(res.data.group_id = 0) {
           this.CCTVInfos = res.data;
-        }
+          // this.cameras = res.data;
       })
+
+      for(let i = 0; i < this.CCTVInfos.length; i++) {
+        // console.log(this.CCTVInfos[i].group_id)
+        if(this.CCTVInfos[i].group_id === 0) {
+          this.cameraDatas.push(this.CCTVInfos[i])
+        }
+      }
     },
     // updateGroupData(name) {
     //     // if(name){

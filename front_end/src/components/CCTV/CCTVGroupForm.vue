@@ -12,10 +12,11 @@
                     <td><input type="checkbox" v-on:click="checkAll()" v-model="selectAll" ></td>
                     <td><strong> 그룹명 </strong></td>
                 </tr>
-                <tr v-for="(group, i) in groups" :key="i" class="list-unstyled">
-                    <td><input type="checkbox" :value="group.id" v-model="checkedGroup"></td>
-                    <td><span> {{ group.name }}  </span></td>
+                <tr v-for="(CCTVGroup_Info, i) in CCTVGroup_Infos" :key="i" class="list-unstyled">
+                    <td><input type="checkbox" :value="CCTVGroup_Info.id" v-model="checkedGroup" ></td>
+                    <td><span> {{ CCTVGroup_Info.name }} (  )</span></td>
                 </tr>
+                <span>  {{checkedGroup}} </span>
             </tbody>
         </div>
         <div>
@@ -23,42 +24,38 @@
                 <strong> 카메라 목록 </strong>
                 <button @click="loadCCTV()"> 조회 </button>
                 <button @click="insertGroupID()"> 추가 </button>
-                <button > 삭제 </button>
+                <button @click="test()"> 삭제 </button>
             </thead>
-
-            
-        </div>
-        <!-- <thead>
-            <strong> 녹화장치 정보 </strong>
-            <button @click="ShowInsertModal()"> 추가 </button>
-            <button @click="ShowUpdateModal()"> 수정 </button>
-            <button @click="delRecoInfo(checkedReco)"> 삭제 </button>
-        </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="checkbox" v-on:click="checkAll()" v-model="selectAll"></td>
-                        <td><strong> 번호 </strong></td>
-                        <td><strong> 서버이름 </strong></td>
-                        <td><strong> IP 주소 </strong></td>
-                        <td><strong> 업체명 </strong></td>
-                    </tr>
-                </tbody>
+            <tbody>
+                <td><strong> 번호 </strong></td>
+                <td><strong> 사용 </strong></td>
+                <td><strong> 장치 이름 </strong></td>
+                <td><strong> 모델명 </strong></td>
+                <td><strong> 주소 </strong></td>
+                <td><strong> 웹 포트 </strong></td>
+                <td><strong> 서비스 포트 </strong></td>
+                <td><strong> 제조사 </strong></td>
+                <td><strong> 장치 종류 </strong></td>
+            </tbody>
             <tfoot>
-                <tr v-for="(RecoInfo, i) in RecoInfos" :key="i" class="list-unstyled">
-                    <td><input type="checkbox" :value="RecoInfo.id" v-model="checkedReco"></td>
+                <tr v-for="(CCTVGroup_Camera_Info, i) in CCTVGroup_Camera_Infos" :key="i" class="list-unstyled">
                     <td><span> {{ i+1 }}  </span></td>
-                    <td><span> {{ RecoInfo.serverName }} </span></td>
-                    <td><span> {{ RecoInfo.ipAddress }} </span></td>
-                    <td><span> {{ RecoInfo.vendor }} </span></td>
+                    <td><span> {{ CCTVGroup_Camera_Info.health_check }} </span></td>
+                    <td><span> {{ CCTVGroup_Camera_Info.name }} </span></td>
+                    <td><span> {{ CCTVGroup_Camera_Info.model }} </span></td>
+                    <td><span> {{ CCTVGroup_Camera_Info.address }}</span></td>
+                    <td><span> {{ CCTVGroup_Camera_Info.manage_port }} </span></td>
+                    <td><span> {{ CCTVGroup_Camera_Info.rtsp_port }} </span></td>
+                    <td><span> {{ CCTVGroup_Camera_Info.manufacturer }} </span></td>
+                    <td><span> {{ CCTVGroup_Camera_Info.camera_type }} </span></td>
                 </tr>
-            </tfoot> -->
-        <!-- <RecoInsert v-if="InsertModal" @close="InsertModal = false" v-on:close="getRecoInfo()">
-        </RecoInsert> -->
+            </tfoot>
+        </div>
 
-        <GroupUpdate :group_id.sync="group_id" v-if="UpdateModal" @close="UpdateModal = false" v-on:close="getGroup()">
+        <!-- <GroupUpdate :group_id.sync="group_id" v-if="UpdateModal" @close="UpdateModal = false" v-on:close="getGroup()">
         </GroupUpdate>
         <InsertGroupId :group_id.sync="group_id" v-if="insertGroupIDModal" @close="insertGroupIDModal = false" v-on:close="getGroup()">
-        </InsertGroupId>
+        </InsertGroupId> -->
     </body>
 </template>
 
@@ -68,33 +65,61 @@ import InsertGroupId from './Modals/CCTVGroup/InsertGroupId.vue';
 
 export default {
     mounted() {
-        this.getGroup()
+        this.getData();
     },
     data() {
         return {
-            UpdateModal: false,
-            insertGroupIDModal: false,
+            // UpdateModal: false,
+            // insertGroupIDModal: false,
             selectAll: false,
-            groups:[],
+
+            CCTVGroup_Infos:[],
+            CCTVGroup_Camera_Infos:[],
+            Group_Count: [],
+
             checkedGroup:[],
-            group_id: '',
-            selected: '',
+
+            // selectGroupId: '',
+            // group_id: '',
+            // selected: '',
         }
     },
     methods: {
-        checkAll() {
-            this.checkedGroup = [];
-            if(!this.selectAll) {
-                for(let i in this.groups) {
-                    this.checkedGroup.push(this.groups[i].id)
+        getData () {
+            this.$http.get('http://localhost:3000/cctvgroup_infos')
+            .then((res) => {
+                this.CCTVGroup_Infos = res.data
+            })
+
+            this.$http.get('http://localhost:3000/cctvgorup_camera')
+            .then((res) => {
+                this.CCTVGroup_Camera_Infos = res.data
+            })
+
+            for(let i = 0; i < this.CCTVGroup_Camera_Infos.length; i++) {
+                for(let j = 0; j < this.CCTVGroup_Infos.length; j++) {
+                    if(this.CCTVGroup_Camera_Infos[i].group_name == this.CCTVGroup_Infos[j].name) {
+                        
+                    }
                 }
             }
         },
-        getGroup () {
-            this.$http.get('http://localhost:3000/group_data')
+        checkAll() {
+            this.checkedGroup = [];
+            if(!this.selectAll) {
+                for(let i in this.CCTVGroup_Infos) {
+                    this.checkedGroup.push(this.CCTVGroup_Infos[i].id)
+                }
+            }
+        },
+
+        getGroupCameraCount() {
+            this.$http.get('http://localhost:3000/cctv_infos')
             .then((res) => {
                 this.groups = res.data
             })
+            
+
         },
         makeGroup() {
             this.$http.post('http://localhost:3000/group_data', {
@@ -125,19 +150,34 @@ export default {
                 alert('그룹을 선택하세요')
             }
             else {
-                for(let i = 0; i < checkedGroup.length; i++)
-                {
+                for(let i = 0; i < checkedGroup.length; i++){
                     this.$http.delete('http://localhost:3000/group_data/'+checkedGroup[i])
-                .then((res) => {
-                    this.getGroup()
-                 })
+                    .then((res) => {
+                        this.getGroup()
+                    })
                 }
             }
-            
             this.checkedGroup = [];
         },
         loadCCTV() {
+            if(this.camerasingroup.length > 0) {
+                this.camerasingroup = [];
+            }
 
+            this.$http.get('http://localhost:3000/cctv_infos')
+            .then((res) => {
+                this.cameras = res.data
+            })
+
+            for(let i = 0; i < this.cameras.length; i++) {
+                for(let j = 0; j < this.checkedGroup.length; j++) {
+                    if(this.cameras[i].group_id == this.checkedGroup[j]) {
+                        this.camerasingroup.push(this.cameras[i])
+                    }
+                }
+            }
+
+            this.cameras = [];
         },
         insertGroupID() {
             if(0 == this.checkedGroup.length)  {

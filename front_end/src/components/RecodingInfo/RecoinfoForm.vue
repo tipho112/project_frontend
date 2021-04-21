@@ -20,8 +20,8 @@
                 <tr v-for="(RecoInfo, i) in RecoInfos" :key="i" class="list-unstyled">
                     <td><input type="checkbox" :value="RecoInfo.id" v-model="checkedReco"></td>
                     <td><span> {{ i+1 }}  </span></td>
-                    <td><span> {{ RecoInfo.serverName }} </span></td>
-                    <td><span> {{ RecoInfo.ipAddress }} </span></td>
+                    <td><span> {{ RecoInfo.name }} </span></td>
+                    <td><span> {{ RecoInfo.ip_address }} </span></td>
                     <td><span> {{ RecoInfo.vendor }} </span></td>
                 </tr>
             </tfoot>
@@ -62,7 +62,7 @@ export default {
             }
         },
         getRecoInfo () {
-            this.$http.get('http://localhost:3000/RecoInfoData')
+            this.$http.get('http://localhost:3000/recoding_infos')
             .then((res) => {
                 this.RecoInfos = res.data
             })
@@ -75,7 +75,7 @@ export default {
             else {
                 for(let i = 0; i < checkedReco.length; i++)
                 {
-                    this.$http.delete('http://localhost:3000/RecoInfoData/'+checkedReco[i])
+                    this.$http.delete('http://localhost:3000/recoding_infos/'+checkedReco[i])
                 .then((res) => {
                     this.getRecoInfo()
                  })
