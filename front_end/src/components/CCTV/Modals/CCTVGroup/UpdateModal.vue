@@ -47,18 +47,18 @@ export default {
   },
   methods: {
     getGroupData () {
-      this.$http.get('http://localhost:3000/group_data/'+this.group_id)
+      this.$http.get('http://localhost:3000/cctvgroup_infos/'+ this.group_id)
       .then((res) => {
           this.name = res.data.name;
       })
     },
     updateGroupData(name) {
         if(name){
-            this.$http.patch('http://localhost:3000/group_data/'+this.group_id, {
+            this.$http.patch('http://localhost:3000/cctvgroup_infos/'+this.group_id, {
             name: name
             })
             .then((res) => {
-            this.groupData.push(res.data);
+            // this.groupData.push(res.data);
             })
         }
     },

@@ -11,19 +11,20 @@
 
           <div class="modal-body">
             <slot name="body">
-                <tr v-for="(CCTVInfo, i) in CCTVInfos" :key="i" class="list-unstyled">
+                <tr v-for="(CCTVInfo, i) in CCTVInfos" :key="i" v-show="i < 30" class="list-unstyled">
                     <td>
-                      <input v-if="CCTVInfo.group_id == 0" type="checkbox" :value="CCTVInfo.id">
+                      <input v-if="CCTVInfo.group_id == 0" type="checkbox" v-model="checkedCCTV" :value="CCTVInfo.id">
                       <input v-if="CCTVInfo.group_id != 0" type="checkbox" :value="CCTVInfo.id" checked disabled>
                     </td>
                     <td><span> {{ CCTVInfo.name }}  </span></td>
                 </tr>
+                <span> {{ checkedCCTV }} </span>
             </slot>
           </div>
 
           <div class="modal-footer">
             <slot name="footer">
-              <button @click="$emit('close')"> 수정 </button>
+              <button @click="updateCCTVGroupData(checkedCCTV), $emit('close')"> 수정 </button>
               <button @click="$emit('close')"> 취소 </button>
             </slot>
           </div>
@@ -42,16 +43,11 @@ export default {
     }
   },
   mounted() {
-    // this.loadData();
-    // this.getCCTVGroupData();
     this.loadData();
-    // this.getCCTVGroupData();
   },
   data() {
         return {
-            groupData: [],
             CCTVInfos: [],
-            cameraDatas: [],
             checkedCCTV: [],
             name: '',
         }
@@ -61,26 +57,17 @@ export default {
       this.$http.get('http://localhost:3000/cctv_infos')
       .then((res) => {
           this.CCTVInfos = res.data;
-          // this.cameras = res.data;
       })
-
-      for(let i = 0; i < this.CCTVInfos.length; i++) {
-        // console.log(this.CCTVInfos[i].group_id)
-        if(this.CCTVInfos[i].group_id === 0) {
-          this.cameraDatas.push(this.CCTVInfos[i])
-        }
+    },
+    updateCCTVGroupData() {
+      for(let i = 0; i < this.checkedCCTV.length; i++) {
+        this.$http.patch('http://localhost:3000/cctv_infos/'+this.checkedCCTV[i], {
+          group_id: this.group_id
+        })
+        .then((res) => {
+        })
       }
     },
-    // updateGroupData(name) {
-    //     // if(name){
-    //     //     this.$http.patch('http://localhost:3000/group_data/'+this.group_id, {
-    //     //     name: name
-    //     //     })
-    //     //     .then((res) => {
-    //     //     this.groupData.push(res.data);
-    //     //     })
-    //     // }
-    // },
   }
 }
 </script>

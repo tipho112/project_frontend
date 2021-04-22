@@ -46,7 +46,7 @@
       "reporter_comment": "고장 리포트",
       "health_comment": "",
       "user_comment": "카메라 상태 확인",
-      "group_id": 0
+      "group_id": 1
     },
     {
       "id": 2,
@@ -80,7 +80,7 @@
       "reporter_comment": "",
       "health_comment": "",
       "user_comment": "",
-      "group_id": 0
+      "group_id": 2
     },
     {
       "id": 3,
@@ -148,7 +148,7 @@
       "reporter_comment": "",
       "health_comment": "",
       "user_comment": "",
-      "group_id": 0
+      "group_id": 4
     },
     {
       "id": 5,
@@ -182,7 +182,7 @@
       "reporter_comment": "",
       "health_comment": "",
       "user_comment": "",
-      "group_id": 0
+      "group_id": 5
     },
     {
       "id": 6,
@@ -216,7 +216,7 @@
       "reporter_comment": "",
       "health_comment": "",
       "user_comment": "",
-      "group_id": 0
+      "group_id": 3
     },
     {
       "id": 7,
@@ -26107,7 +26107,7 @@
     },
     {
       "id": 2,
-      "name": "22"
+      "name": "그룹22"
     },
     {
       "id": 3,
@@ -26128,17 +26128,6 @@
       "manufacturer": "마크애니",
       "model": "스마트아이",
       "paths": "루트"
-    }
-  ],
-  "repared_logs": [
-    {
-      "id": 0,
-      "created_at": "2021-03-12",
-      "updated_at": "2021-03-12",
-      "deleted_at": "",
-      "cctv_info_id": 1,
-      "user_info_id": 1,
-      "status": "철거 예정"
     }
   ],
   "fix_comments": [
