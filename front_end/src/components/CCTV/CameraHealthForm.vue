@@ -3,10 +3,10 @@
         <table>
             <thead>
                 <strong> 카메라 상태 확인 </strong>
-                <button @click="updateData(), getTime()"> 데이터 갱신 </button>
-                <span> <strong>전체 :</strong> {{ Health_Infos.length }}   </span>
-                <span> <strong>정상 :</strong> {{ health_true }}   </span>
-                <span> <strong>비정상 :</strong> {{ health_false }}   </span>
+                <button @click="getCount(), getTime()"> 데이터 갱신 </button>
+                <span> <strong> 전체 : </strong> {{ total }}   </span>
+                <span> <strong> 정상 : </strong> {{ Health_True }}   </span>
+                <span> <strong> 비정상 : </strong> {{ Health_False }}   </span>
                 <span> <strong>최종 업데이트 :</strong> {{ update_Date }}   </span>
             </thead>
                 <tbody>
@@ -20,13 +20,13 @@
                     </tr>
                 </tbody>
             <tfoot >
-                <tr v-for="(Health_Info, i) in Health_Infos" :key="i" class="list-unstyled" >
-                    <td><span> {{ Health_Info.id }} </span></td>
-                    <td><span> {{ Health_Info.name }} </span></td>
-                    <td><span> {{ Health_Info.health_check }} </span></td>
-                    <td><span> {{ Health_Info.comment }} </span></td>
-                    <td><span> {{ Health_Info.user_comment }} </span></td>
-                    <td><button :value="Health_Info.id" @click="reloadData(), getTime()"> 새로고침 </button></td>
+                <tr v-for="(CCTV_Info, i) in CCTV_Infos" :key="i" class="list-unstyled" >
+                    <td><span> {{ CCTV_Info.id }} </span></td>
+                    <td><span> {{ CCTV_Info.name }} </span></td>
+                    <td><span> {{ CCTV_Info.health_check }} </span></td>
+                    <td><span> {{ CCTV_Info.comment }} </span></td>
+                    <td><span> {{ CCTV_Info.user_comment }} </span></td>
+                    <td><button :value="CCTV_Info.id" @click="getData(), getTime()"> 새로고침 </button></td>
                 </tr>
             </tfoot>
         </table>
@@ -37,91 +37,49 @@
 export default {
     mounted() {
         this.getData();
-        this.dataFilter();
+        this.getTime();
+    },
+    beforeUpdate() {
+        this.getCount();
     },
     data() {
         return {
             CCTV_Infos:[],
-            Camera_Infos:[],
             Health_Infos: [],
 
-            allCount : 0,
-            health_true: 0,
-            health_false: 0,
-            
-            update_Date: '00:00:00',
-
-            loadData: false,
+            total: 0,
+            Health_True: 0,
+            Health_False: 0,
+            update_Date : ''
         }
     },
     methods: {
-        getTime() {
-            var moment = require('moment');
-            var now = moment();
-            this.update_Date = now.format('HH:mm:ss');
-        },
-        updateData() {
-            if(this.loadData == false) {
-                this.dataFilter();
-                this.loadData = true;
-            }
-            else if(this.loadData == true) {
-                this.reloadData();
-            }
-        },
         getData () {
-            this.$http.get('http://localhost:3000/cctv_infos1')
+            this.$http.get('http://localhost:3000/cctv_infos')
             .then((res) => {
                 this.CCTV_Infos = res.data
             })
-
-            this.$http.get('http://localhost:3000/camera_infos')
-            .then((res) => {
-                this.Camera_Infos = res.data
-            })
         },
-        dataFilter() {
-            for(let i = 0; i < this.CCTV_Infos.length; i++) {
-                for(let j = 0; j < this.Camera_Infos.length; j++) {
-                    if(this.CCTV_Infos[i].name == this.Camera_Infos[j].name) {
-                        this.Health_Infos.push({
-                            id : this.CCTV_Infos[i].id,
-                            name : this.CCTV_Infos[i].name,
-                            health_check : this.Camera_Infos[j].health_check,
-                            comment : this.Camera_Infos[j].comment,
-                            user_comment : ''
-                        })
-                    }
-                }
-            }
+        getCount() {
+            this.total =  0
+            this.Health_True= 0
+            this.Health_False= 0
 
-            for(let i = 0; i < this.Health_Infos.length; i++) {
-                if(this.Health_Infos[i].health_check == "true") {
-                    this.health_true += 1;
-                }
-                else {
-                    this.health_false += 1;
-                }
-            }
+            this.total = this.CCTV_Infos.length;
 
-            Array.from(new Set(this.CCTV_Infos));
-            Array.from(new Set(this.Camera_Infos));
-            Array.from(new Set(this.Health_Infos));
-        },
-        reloadData() {
-            this.allCount = 0;
-            this.health_true = 0;
-            this.health_false = 0;
-
-            for(let i = 0; i < this.Health_Infos.length; i++) {
-                if(this.Health_Infos[i].health_check == "true") {
-                    this.health_true += 1;
-                }
-                else {
-                    this.health_false += 1;
-                }
-            }
             
+            for(let i = 0; i < this.CCTV_Infos.length; i++) {   
+                if(this.CCTV_Infos[i].health_check == "true") {
+                    this.Health_True += 1;
+                }
+                else if (this.CCTV_Infos[i].health_check == "false") {
+                    this.Health_False += 1;
+                }
+            }
+        },
+        getTime() {
+            var moment = require('moment');
+            this.update_Date = moment().format('YYYY-MM-DD   h:mm:ss a');
         }
     },
 }

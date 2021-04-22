@@ -27,10 +27,9 @@
                     <td><input type="checkbox" :value="CCTVInfo.id" v-model="checkedCCTV"></td>
                     <td><span> {{ i+1 }}  </span></td>
                     <td>
-                        <span v-if=" CCTVInfo.check1 == true"> 정상 </span>
-                        <span v-else-if="CCTVInfo.check1 == false"> 고장 </span>
+                        <span v-if="CCTVInfo.ptz_control_usage == 1"> 정상 </span>
+                        <span v-else-if="CCTVInfo.ptz_control_usage == 0"> 고장 </span>
                     </td>
-                    <!-- <td><span v-else-if="CCTVInfo.check1 == false">  고장  </span></td> -->
                     <td><span> {{ CCTVInfo.name }} </span></td>
                     <td><span> {{ CCTVInfo.area1 }} {{ CCTVInfo.area2 }} {{ CCTVInfo.area3 }}</span></td>
                     <td><span> {{ CCTVInfo.manage_port }} </span></td>
@@ -49,8 +48,8 @@
 </template>
 
 <script>
-import CCTVInsert from './Modals/CCTVInsert/CCTVInsertModal.vue';
-import CCTVUpdate from './Modals/CCTVInsert/CCTVUpdateModal.vue';
+import CCTVInsert from './Modals/CCTVInfo/CCTVInsertModal.vue';
+import CCTVUpdate from './Modals/CCTVInfo/CCTVUpdateModal.vue';
 
 export default {
     mounted() {
@@ -82,7 +81,7 @@ export default {
                 for(let i = 0; i < checkedCCTV.length; i++)
                 {
                     this.$http.delete('http://localhost:3000/cctv_infos/'+checkedCCTV[i])
-                .then((res) => {
+                    .then((res) => {
                     this.getCCTVInfo()
                  })
                 }

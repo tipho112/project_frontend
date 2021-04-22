@@ -3,11 +3,12 @@
         <table>
             <thead>
                 <strong> 고장 리포트 </strong>
-                <button @click="test()"> 코멘트 설정 </button>
+                <!-- <button @click="reloadData()"> 데이터 갱신 </button> -->
+                <button @click="ShowModal()"> 코멘트 설정 </button>
             </thead>
                 <tbody>
                     <tr>
-                        <td><strong> 번호 </strong></td>
+                        <td><strong> ID </strong></td>
                         <td><strong> 보고자 </strong></td>
                         <td><strong> 보고일자 </strong></td>
                         <td><strong> 장치 이름 </strong></td>
@@ -17,157 +18,82 @@
                         <td><strong> 수리 현황 </strong></td>
                     </tr>
                 </tbody>
-            <tfoot>
-                <tr v-for="(Repared_Data, i) in Repared_Datas" :key="i">
-                    <td><span> {{ i+1 }} </span></td>
-                    <td><span> {{ Repared_Data.id_string }} </span></td>
-                    <td><span> {{ Repared_Data.created_at }} </span></td>
-                    <td><span> {{ Repared_Data.name }} </span></td>
-                    <td><span> {{ Repared_Data.address }} </span></td>
-                    <td><span> {{ Repared_Data.status }} </span></td>
-                    <td><span> {{ Repared_Data.comment }} </span></td>
-                    <!-- <td><span> {{ Repared_Data.deleted_at }} </span></td> -->
-                    <td><button :value="Repared_Data.id" @click="del_Repared_Data(Repared_Data.id)"> 새로고침 </button></td>
+            <tfoot v-for="(CCTV_Info, i) in CCTV_Infos" :key="i">
+                <tr v-if="CCTV_Info.ptz_control_usage == 0">
+                    <td><span> {{ CCTV_Info.id }} </span></td>
+                    <td><span> {{ CCTV_Info.reporter }} </span></td>
+                    <td><span> {{ CCTV_Info.updated_at }} </span></td>
+                    <td><span> {{ CCTV_Info.name }} </span></td>
+                    <td><span> {{ CCTV_Info.area1 }} {{ CCTV_Info.area2 }} {{ CCTV_Info.area3 }} </span></td>
+                    <td><span> {{ CCTV_Info.reporter_comment }} </span></td>
+                    <td><span> {{ CCTV_Info.comment }} </span></td>
+                    <td><button :value="CCTV_Info.id" @click="fixCCTV(CCTV_Info.id)"> 수리완료 </button></td>
                 </tr>
             </tfoot>
         </table>
+
+        <CommentModal v-if="showModal" @close="showModal = false">
+        </CommentModal>
     </body>
 </template>
 
 <script>
+import CommentModal from './Modals/FixReport/CommentModal.vue';
+
 export default {
-    mounted() {
-        this.getData();
-        // this.dataFilter();
+    created() {
+        this.getData()
     },
     data() {
         return {
-            Repared_Logs:[],
             CCTV_Infos: [],
-            Camera_Infos:[],
-            User_Infos: [],
-            Repared_Datas: [],
+            Filter_CCTVs: [],
+
+            showModal: false
         }
     },
     methods: {
         getData () {
-            this.$http.get('http://localhost:3000/repared_logs')
+            this.$http.get('http://localhost:3000/cctv_infos')
             .then((res) => {
-                this.Repared_Logs = res.data
-            })
-
-            this.$http.get('http://localhost:3000/cctv_infos1')
-            .then((res) => {
+                // console.log(res.data)
                 this.CCTV_Infos = res.data
             })
-
-            this.$http.get('http://localhost:3000/camera_infos')
-            .then((res) => {
-                this.Camera_Infos = res.data
-            })
-
-            this.$http.get('http://localhost:3001/user_infos')
-            .then((res) => {
-                this.User_Infos = res.data
-            })
         },
-        test() {
+        filterData () {
+            for(let i = 0; i < this.CCTV_Infos.length; i++) {
+                if(this.CCTV_Infos[i].ptz_control_usage == 0) {
+                    this.Filter_CCTVs.push({
+                        id : this.CCTV_Infos[i].id,
+                        updated_at : this.CCTV_Infos[i].updated_at,
+                        name : this.CCTV_Infos[i].name,
+                        area1 : this.CCTV_Infos[i].area1,
+                        area2 : this.CCTV_Infos[i].area2,
+                        area3 : this.CCTV_Infos[i].area3,
+                        reporter_comment : this.CCTV_Infos[i].reporter_comment,
+                        comment : this.CCTV_Infos[i].comment
+                    })
+                }
+            }
+        },
+        fixCCTV(id) {
+            this.$http.patch('http://localhost:3000/cctv_infos/'+ id, {
+                ptz_control_usage: 1
+            })
+            .then((res) => {
+                // this.Filter_CCTVs.push(res.data);
+            })
+
+            this.CCTV_Infos =  [],
+
             this.getData();
-
-            for(var i = 0; i < this.Repared_Logs.length; i++) {
-                for(var j = 0; j < this.User_Infos.length; j++) {
-                    if(this.Repared_Logs[i].user_info_id == this.User_Infos[j].id) {
-                        this.Repared_Datas.push({
-                            id : this.Repared_Logs[i].id,
-                            created_at : this.Repared_Logs[i].created_at,
-                            updated_at : this.Repared_Logs[i].updated_at,
-                            deleted_at : '0000-00-00',
-                            status : this.Repared_Logs[i].status,
-                            id_string : this.User_Infos[j].id_string,
-                            user_info_id : this.User_Infos[j].id
-                        })
-                    }
-                }
-            }
-
-            for(var k = 0; k < this.Repared_Logs.length; k++) {
-                for(var l = 0; l < this.CCTV_Infos.length; l++) {
-                    for(var m = 0; m < this.Camera_Infos.length; m++) {
-                        if(this.Repared_Logs[k].cctv_info_id == this.CCTV_Infos[l].id && this.CCTV_Infos[l].name == this.Camera_Infos[m].name) {
-                            this.Repared_Datas.push({
-                                name : this.CCTV_Infos[l].name,
-                                address : this.Camera_Infos[m].address,
-                                comment : this.Camera_Infos[m].comment,
-                                cctv_info_id : this.Camera_Infos[m].id
-                            })
-                        }
-                    }
-                }
-            }
-
-            // Array.from(new Set(this.Repared_Datas));
         },
-        del_Repared_Data(id) {
-
+        ShowModal() {
+            this.showModal = !this.showModal;
         }
-        // getTime() {
-        //     var moment = require('moment');
-        //     var now = moment();
-        //     this.update_Date = now.format('HH:mm:ss');
-        // },
-        // updateData() {
-        //     if(this.loadData == false) {
-        //         this.dataFilter();
-        //         this.loadData = true;
-        //     }
-        //     else if(this.loadData == true) {
-        //         this.reloadData();
-        //     }
-        // },
-
-        // dataFilter() {
-        //     for(let i = 0; i < this.CCTV_Infos.length; i++) {
-        //         for(let j = 0; j < this.Camera_Infos.length; j++) {
-        //             if(this.CCTV_Infos[i].name == this.Camera_Infos[j].name) {
-        //                 this.Health_Infos.push({
-        //                     id : this.CCTV_Infos[i].id,
-        //                     name : this.CCTV_Infos[i].name,
-        //                     health_check : this.Camera_Infos[j].health_check,
-        //                     comment : this.Camera_Infos[j].comment,
-        //                     user_comment : ''
-        //                 })
-        //             }
-        //         }
-        //     }
-
-        //     for(let i = 0; i < this.Health_Infos.length; i++) {
-        //         if(this.Health_Infos[i].health_check == "true") {
-        //             this.health_true += 1;
-        //         }
-        //         else {
-        //             this.health_false += 1;
-        //         }
-        //     }
-
-        //     Array.from(new Set(this.CCTV_Infos));
-        //     Array.from(new Set(this.Camera_Infos));
-        //     Array.from(new Set(this.Health_Infos));
-        // },
-        // reloadData() {
-        //     this.allCount = 0;
-        //     this.health_true = 0;
-        //     this.health_false = 0;
-
-        //     for(let i = 0; i < this.Health_Infos.length; i++) {
-        //         if(this.Health_Infos[i].health_check == "true") {
-        //             this.health_true += 1;
-        //         }
-        //         else {
-        //             this.health_false += 1;
-        //         }
-        //     }
-            
-        // }
+    },
+    components: {
+        CommentModal: CommentModal
     }
 }
 </script>

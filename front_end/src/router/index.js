@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 import RecoinfoForm from '@/components/RecodingInfo/RecoinfoForm'
 
-import CCTVInsertForm from "@/components/CCTV/CCTVInsertForm"
+import CCTVInfoForm from "@/components/CCTV/CCTVInfoForm"
 import CCTVGroupForm from "@/components/CCTV/CCTVGroupForm"
 import ControlGroupForm from "@/components/CCTV/ControlGroupForm"
 
@@ -19,8 +19,8 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'CCTVInsert',
-      component: CCTVInsertForm
+      name: 'CCTVInfoForm',
+      component: CCTVInfoForm
     },
     {
       path: '/',

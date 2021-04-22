@@ -5,7 +5,7 @@
         <div class="modal-container">
           <div class="modal-header">
             <slot name="header">
-              <h3> CCTV 수정</h3>
+              <h3> CCTV 등록</h3>
             </slot>
           </div>
 
@@ -31,7 +31,7 @@
               <h4><strong> RTSP 정보</strong></h4>
               <span> RTSP Path </span><input type="text" v-model="rtsp_path" placeholder="RTSP Path 입력"><br/>
               <span> RTSP Port </span><input type="text" v-model="rtsp_port" placeholder="RTSP Port 입력"><br/>
-              <span> ONVIF Path </span><input type="text" v-model="onvif_path" placeholder="ONVIF Path 입력"><br/>
+              <span> ONVIF Path </span><input type="text" v-model="onvif_profile" placeholder="ONVIF Path 입력"><br/>
               <span> ONVIF Port </span><input type="text" v-model="onvif_port" placeholder="ONVIF Port 입력"><br/>
               <span> 사용자명 </span><input type="text" v-model="username" placeholder="사용자명 입력"><br/>
               <span> 비밀번호 </span><input type="text" v-model="password" placeholder="비밀번호 입력"><br/>
@@ -39,14 +39,13 @@
 
             <slot name="body3">
               <h4><strong> 사용 목적</strong></h4>
-              <input type="text" v-model="useable" placeholder="사용목적 입력"><br/>
+              <input type="text" v-model="camera_type" placeholder="사용목적 입력"><br/>
             </slot>
           </div>
 
           <div class="modal-footer">
             <slot name="footer">
-              <span> {{check1}} {{check2}} {{check3}}</span>
-              <button @click="updateCCTVInfo(name, check1, check2, check3, comment, ip_address, area1, area2, area3, latitude, longitude, manufacturer, model, rtsp_path, rtsp_port, onvif_path, onvif_port, username, password, useable), $emit('close')"> 수정 </button>
+              <button @click="addCCTVInfo(name, check1, check2, check3, comment, ip_address, area1, area2, area3, latitude, longitude, manufacturer, model, onvif_profile, rtsp_port, onvif_profile, onvif_port, username, password, camera_type), $emit('close')"> 추가 </button>
               <button @click="$emit('close')"> 취소 </button>
             </slot>
           </div>
@@ -57,13 +56,8 @@
 </template>
 
 <script>
+
 export default {
-  props : {
-    CCTVId: {
-      type: Number,
-      required: true
-    }
-  },
   data() {
         return {
           CCTVInfos: [],
@@ -82,51 +76,55 @@ export default {
           model: '',
           rtsp_path: '',
           rtsp_port: '',
-          onvif_path: '',
+          onvif_profile: '',
           onvif_port: '',
           username: '',
           password: '',
-          useable: '',
-          manage_port: '웹 포트',
+          camera_type: '',
+          manage_port: '',
+          forwarded : 0,
+          updated_at : "",
+
+          ptz_control_usage: 1,
+          alarm: 1,
+          emergency_bell: 1,
+          control_group: false,
+          reporter: '',
+          reporter_comment: '',
+          health_comment : '',
+          user_comment : '',
+          group_id: 0
         }
   },
-  mounted() {
-    this.getCCTVInfo()
-  },
   methods: {
-    getCCTVInfo () {
-      this.$http.get('http://localhost:3000/cctv_infos/' + this.CCTVId)
-      .then((res) => {
-          this.name= res.data.name,
-          this.check1= res.data.check1,
-          this.check2= res.data.check2,
-          this.check3= res.data.check3,
-          this.comment= res.data.comment,
-          this.ip_address= res.data.ip_address,
-          this.area1= res.data.area1,
-          this.area2= res.data.area2,
-          this.area3= res.data.area3,
-          this.latitude= res.data.latitude,
-          this.longitude= res.data.longitude,
-          this.manufacturer= res.data.manufacturer,
-          this.model= res.data.model,
-          this.rtsp_path= res.data.rtsp_path,
-          this.rtsp_port= res.data.rtsp_port,
-          this.onvif_path= res.data.onvif_path,
-          this.onvif_port= res.data.onvif_port,
-          this.username= res.data.username,
-          this.password= res.data.password,
-          this.useable= res.data.useable,
-          this.manage_port= res.data.manage_port
-      })
-    },
-    updateCCTVInfo(name, check1, check2, check3, comment, ip_address, area1, area2, area3, latitude, longitude, manufacturer, model, rtsp_path, rtsp_port, onvif_path, onvif_port, username, password, useable) {
-      if(name || check1 || check2 || check3 && comment && ip_address && area1 && area2 && area3 && latitude && longitude && manufacturer && model && rtsp_path && rtsp_port && onvif_path && onvif_port && username && password && useable){
-        this.$http.patch('http://localhost:3000/cctv_infos/'+this.CCTVId, {
+    addCCTVInfo(name, check1, check2, check3, comment, ip_address, area1, area2, area3, latitude, longitude, manufacturer, model, rtsp_path, rtsp_port, onvif_profile, onvif_port, username, password, camera_type) {
+      if(check1 == true) {
+        this.ptz_control_usage = 1;
+      }
+      else {
+        this.ptz_control_usage = 0;
+      }
+
+      if(check2 == true) {
+        this.alarm = 1;
+      }
+      else {
+        this.alarm = 0;
+      }
+
+      if(check3 == true) {
+        this.emergency_bell = 1;
+      }
+      else {
+        this.emergency_bell = 0;
+      }
+      
+      if(name && comment && ip_address && area1 && area2 && area3 && latitude && longitude && manufacturer && model && rtsp_path && rtsp_port && onvif_profile && onvif_port && username && password && camera_type) {
+        this.$http.post('http://localhost:3000/cctv_infos', {
           name: name,
-          check1: check1,
-          check2: check2,
-          check3: check3,
+          ptz_control_usage: this.ptz_control_usage,
+          alarm: this.alarm,
+          emergency_bell: this.emergency_bell,
           comment: comment,
           ip_address: ip_address,
           area1: area1,
@@ -138,19 +136,61 @@ export default {
           model: model,
           rtsp_path: rtsp_path,
           rtsp_port: rtsp_port,
-          onvif_path: onvif_path,
+          onvif_profile: onvif_profile,
           onvif_port: onvif_port,
           username: username,
           password: password,
-          useable: useable,
-          manage_port: this.manage_port
+          camera_type: camera_type,
+          manage_port: this.manage_port,
+          forwarded : this.forwarded,
+          updated_at : this.updated_at,
+          control_group: this.control_group,
+          reporter: this.reporter,
+          reporter_comment: this.reporter_comment,
+          health_comment : this.health_comment,
+          user_comment : this.user_comment,
+          group_id : this.group_id
         })
         .then((res) => {
-          this.CCTVInfos.push(res.data); 
+          this.CCTVInfos.push(res.data);
+          this.CCTVInfos = [],
+          this.name = '',
+          this.check1 = false,
+          this.check2 = false,
+          this.check3 = false,
+          this.comment = '',
+          this.ip_address = '',
+          this.area1 = '',
+          this.area2 = '',
+          this.area3 = '',
+          this.latitude = '',
+          this.longitude = '',
+          this.manufacturer = '',
+          this.model = '',
+          this.rtsp_path = '',
+          this.rtsp_port = '',
+          this.onvif_profile = '',
+          this.onvif_port = '',
+          this.username = '',
+          this.password = '',
+          this.camera_type = '',
+          this.manage_port = '',
+          this.forwarded = 0,
+          this.updated_at = "",
+
+          this.ptz_control_usage = 0,
+          this.alarm = 0,
+          this.emergency_bell = 0,
+          this.control_group = false,
+          this.reporter = '',
+          this.reporter_comment = '',
+          this.health_comment = '',
+          this.user_comment = ''
+          this.group_id = 0
         })
       }
+    },
   }
-}
 }
 </script>
 
